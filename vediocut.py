@@ -6,7 +6,7 @@ count = 0
                      
 while(vidcap.isOpened()):
     ret, image = vidcap.read()
-    cv2.imwrite("C:/alldata/store/frame%d.jpg" % count,image)
+    cv2.imwrite("C:/alldata/store/frame%d.jpg" % count,image)https://github.com/wofvh/forany/blob/main/vediocut
     print("Saved fram%d.jpg" % count)
     count += 1
                                                                                                                                                                                                                                         
