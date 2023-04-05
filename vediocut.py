@@ -1,12 +1,12 @@
 import cv2
 
 
-vidcap = cv2.VideoCapture("C:/allmodel\yolov5\data1\mp4/ssss.mp4")
+vidcap = cv2.VideoCapture("C:/alldata/fullvideo/fullvideo.webm")
 count = 0
                      
 while(vidcap.isOpened()):
     ret, image = vidcap.read()
-    cv2.imwrite("C:/alldata/store/frame%d.jpg" % count,image)https://github.com/wofvh/forany/blob/main/vediocut
+    cv2.imwrite("C:/alldata/save/frame%d.jpg" % count,image)
     print("Saved fram%d.jpg" % count)
     count += 1
                                                                                                                                                                                                                                         
@@ -16,8 +16,8 @@ vidcap.release()
 while(vidcap.isOpened()):                       
     ret, image = vidcap.read()
     
-    if(int(vidcap.get(2))% 1 == 0):
-        cv2.imwrite("C:/alldata/store/frame%d.jpg" % count,image)
+    if(int(vidcap.get(4))% 1 == 0):
+        cv2.imwrite("C:/alldata/save/frame%d.jpg" % count,image)
         print("Saved fram%d.jpg" % count)
         count += 1
 '''
@@ -26,7 +26,7 @@ import cv2
 import numpy as np
 import os
 
-path_dir = "C:/alldata/store"
+path_dir = "C:/alldata/save/"
 file_list = os.listdir(path_dir)
 
 file_list[0]
@@ -63,8 +63,8 @@ def Cutting_face_save(image, name):
     #     cv2.destroyAllWindows()
 
         # 이미지 저장하기
-        cv2.imwrite(f"C:/alldata/store/{name}.jpg", cropped)
+        cv2.imwrite(f"C:/alldata/save/{name}.jpg", cropped)
                                                                    
 for name in file_name_list:
-    img = cv2.imread("C:/alldata/store/"+name+".jpg")
+    img = cv2.imread("C:/alldata\save/"+name+".jpg")
     Cutting_face_save(img, name)
