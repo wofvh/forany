@@ -1,1 +1,90 @@
 # yolov5 model 모바일 사용을 위한 가중치 최적화 
+python detect.py --source C:\allmodel\yolov5\data1\webm\fullvideo.webm --weights C:\allmodel\yolov5\runs\train\exp9\weights\best.pt
+
+python detect.py --source C:\allmodel\yolov5\data1\webm --weights C:\allmodel\yolov5\runs\train\exp8\weights/best.pt
+
+0 구찌  		    0 구찌            	 0 Gucci
+
+1 구찌 튜더                1 구찌 튜더	1 Gucci_tudor
+
+2 튜더  		    10  GATE 2	2 GATE2
+
+3티파니 		   11발렛라운지	3 Valet_lounge
+ 
+4 iwc 		   12보테가 베네타	4 BottegaVeneta
+  
+5예거르쿨트르 	   13펜디		5 Fendi
+	
+6 구찌뷰티 	   14불가리 	6 Bulgari
+
+7브라이틀링	   15오메가	7 Omega
+
+8 지라드페리고          16충전기	8 Charger
+
+9 위블로              17엘레베이터 디올 9 Elevator_to_charger
+ 
+10 GATE2	 18디올 		 10 Dior	
+
+11 발레라운지	   19토즈	 	11 Tods
+
+12보테가 베네타         2튜더		12 Tudor
+
+13펜디	     	   20발렌시아가	13 Balenciaga
+
+14불가리 	21톰브라운 여성	14 Thombrowne
+
+15오메가		   22 몽클레어	15 Moncler
+
+16충전기 	 23 부쉐론	16 Boucheron
+
+17엘레베이터 디올      24 생로랑	17 Saint_laurent
+
+18디올 		   25 발렌티노	18 Valentino
+
+19토즈		   3 티파니	19 Tiffany
+
+20 발렌시아가	   4 iwc		20 Iwc
+	
+21 톰브라운 여성	   5예거르쿨트르	21 Jaegerlecoultre
+
+22 몽클레어 	  6구찌뷰티	22 Gucci_beauty
+
+23부쉐론		  7브라이틀링	23 Breitling
+
+24생로랑                 8지라드페리고	24 Girard_perregaux
+
+25 발렌티노              9위블로 	25 Hublot
+
+
+26  프라다 			26 Prada		
+
+27  버버리 			27 Burberry
+
+28  파네라이			28 Panerai
+ 
+29  몽블랑 			29 Montblanc
+				
+				30 Zenith
+
+				31 TAGheuer
+
+
+
+python3.9 train.py --img 640 --batch 8 --epochs 800 --data coco128.yaml --weights yolov5s.pt  --device 0
+
+
+
+
+python3.9 detect.py --source=/home/nvidia/yolov5/data1/webm/fullvideo.webm  --weights=/home/nvidia/yolov5/best.pt 
+
+
+python3.9 detect.py --source=/home/nvidia/yolov5/data1/data/  --weights=/home/nvidia/yolov5/runs/train/best.pt
+
+
+
+
+
+
+
+
+
