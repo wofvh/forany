@@ -1,4 +1,7 @@
-# yolov5 model 모바일 사용을 위한 가중치 최적화 
+# yolov5 model 모바일 사용을 위한 가중치 최적화
+## tensorflow lite 로 가중치 최적화 
+python3.9 export.py --weights /home/nvidia/yolov5/runs/train/yolov5s_full.dlc --include tflite --imgsz 480
+
 python detect.py --source C:\allmodel\yolov5\data1\webm\fullvideo.webm --weights C:\allmodel\yolov5\runs\train\exp9\weights\best.pt
 
 python detect.py --source C:\allmodel\yolov5\data1\webm --weights C:\allmodel\yolov5\runs\train\exp8\weights/best.pt
