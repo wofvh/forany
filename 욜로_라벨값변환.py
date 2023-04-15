@@ -2,10 +2,10 @@ import os
 import glob
 import shutil
 
-# 텍스트 파일이 있는 폴더 경로를 지정합니다.
+# 텍스트 파일이 있는 폴더 경로를 지정
 folder_path = 'C://alldata//test02'
 
-# 수정된 파일을 저장할 폴더 경로를 지정합니다.
+# 수정된 파일을 저장할 폴더 경로를 지정
 save_folder_path = 'C://alldata//save00'
 
 # 폴더 내의 모든 텍스트 파일 경로를 가져옵니다.
