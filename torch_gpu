@@ -1,3 +1,5 @@
+#파이토치 gpu 체크 and 
+
 import numpy as np
 import torch
 import torch.nn as nn
