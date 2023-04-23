@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 
+#신앙심부족 ㅜ 
 
 
 
