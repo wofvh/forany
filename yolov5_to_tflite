@@ -72,7 +72,7 @@ python detect.py --source C:\allmodel\yolov5\data1\webm --weights C:\allmodel\yo
 				31 TAGheuer
 
 
-
+#yolov5 snpe-run-net 으로 dlc 파일 가속화 ! 
 python3.9 train.py --img 640 --batch 8 --epochs 800 --data coco128.yaml --weights yolov5s.pt  --device 0
 
 
