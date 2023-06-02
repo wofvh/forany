@@ -1,0 +1,5 @@
+# rosnode info /face_tracker 노드에서 어떤 토픽을 Publications 하고 Subscriptions:하는지 
+# rostopic info ros 토픽이 어디서 발행됐고 어디서 구독하는지 
+# rosnode list 어떤 node가 작동하는지 
+# rostopic list 어떤 topic이 발행되는지 
+impoer rospy
