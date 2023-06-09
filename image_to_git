@@ -1,0 +1,12 @@
+from PIL import Image
+import imageio
+import os
+
+save_dir = "C:/image_data/gif/"
+os.makedirs(save_dir, exist_ok=True)  # Create the output directory if it doesn't exist
+
+image_paths = [f"C://image_data//{i}" for i in os.listdir("C://image_data//") if os.path.isfile(f"C://image_data//{i}")]
+images = [Image.open(path) for path in image_paths]
+
+output_file = os.path.join(save_dir, "output3.gif")
+imageio.mimsave(output_file, images, fps=21)
