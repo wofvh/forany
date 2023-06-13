@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import Int32
+from std_msgs.msg import Empty
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from time import sleep
+#from mask_cls.msg import CovidImage
+import imageio
+import os
+import rospy
+import numpy as np
+import argparse
+import imutils
+import cv2
+import base64
+from datetime import date
+
+
+image_folder = "/home/nvidia/dcornic-media/src/video/"
+video_path = '/home/nvidia/dcornic-media/src/video/save/video0.webm'
+		
+
+def images_to_video(image_folder, video_path, fps=33):
+    image_files = [str(x)+'.jpg' for x in range(1, 151)]
+    first_image = cv2.imread(os.path.join(image_folder, image_files[0]))
+    height, width, _ = first_image.shape
+    # fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    fourcc = cv2.VideoWriter_fourcc(*'vp09')
+    video_writer = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
+    for image_file in image_files:
+        image_path = os.path.join(image_folder, image_file)
+        image = cv2.imread(image_path)
+        video_writer.write(image)
+        
+    video_writer.release()
+
+class savevdieo:
+    def __init__ (self):
+        # Publisher
+        self.imagetowebm = rospy.Publisher("/image_to_webm", String, queue_size = 1)
+        self.images_to_webm = False
+               
+    def imagewebm(self, data):
+	    self.images_to_webm = True
+        
+
+def images_to_video(image_folder, video_path, fps=33):
+    image_files = [str(x)+'.jpg' for x in range(1, 151)]
+    first_image = cv2.imread(os.path.join(image_folder, image_files[0]))
+    height, width, _ = first_image.shape
+    # fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    fourcc = cv2.VideoWriter_fourcc(*'vp09')
+    video_writer = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
+    for image_file in image_files:
+        image_path = os.path.join(image_folder, image_file)
+        image = cv2.imread(image_path)
+        video_writer.write(image)
+                  
+def main():
+    #pub
+    rospy.init_node('images_to_video', anonymous=False)
+    ic = savevdieo()
+    while not rospy.is_shutdown():
+        if ic.images_to_webm : 
+            for i in range(150):
+                imgTemp = ic.frontImage_.copy()
+                ic.capturedImage_ = ic.frontImage_.copy()
+                imgTemp = logoOverlay(imgTemp, dcornicLogoImg)
+                cv2.imwrite("/home/nvidia/dcornic-media/src/vdio/{}.jpg".format(i+1), cv2.cvtColor(imgTemp, cv2.COLOR_BGRA2RGB))
+            images_to_video(image_folder, video_path, fps=33)
+     
+ 
+
+
+
+
+
+ 
