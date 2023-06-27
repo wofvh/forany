@@ -1,3 +1,4 @@
+#이미지 라인잡기 
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 import cv2
 import numpy as np
