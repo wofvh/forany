@@ -121,6 +121,10 @@ if __name__ == "__main__":
         elapsed_time = current_time - prev_time
         print("Time difference", elapsed_time)
         
+        #비디오 타미머설정
+        if elapsed_time <= y_time_interval :
+            vedio_timer += 1
+            
         # 10 넘어갈시 비디오 스탑 하고 카운트 추가 
         if elapsed_time >= y_time_interval :
             prev_time = current_time
