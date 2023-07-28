@@ -75,7 +75,7 @@ def detect_ppe(image, model, timestamp, cls_detection=[True, True, True, True]):
 recording = False
 
 if __name__ == "__main__":
-    unsafe_threshold = 5  # Number of seconds to consider status as "UnSafe" # x = 5  # seconds
+    unsafe_threshold = 0  # Number of seconds to consider status as "UnSafe" # x = 5  # seconds
     y = 1   # minutes
     output_fps = 20
 
@@ -89,12 +89,10 @@ if __name__ == "__main__":
     video_count = 1
     out = None  # Initialize the 'out' variable
     unsafe_timer = 0.0
-    y_time_interval = y*20
-    percent_count = 0
+    y_time_interval = y*60
     mean_save = 70.0
     unsafe_count = 0
     safe_count = 0
-    recording_duration = 0
     
     while True: 
         ret, frame = cap.read()
@@ -129,20 +127,22 @@ if __name__ == "__main__":
                 out = None
                 video_count += 1
                 recording = False
-                recording_duration = 0
+                prev_time = current_time
+                unsafe_threshold = 0
                 print("녹화를 중단합니다")
 
-        if elapsed_time >= percent_count :  # Print percentages every 5 seconds
+        if elapsed_time >= unsafe_threshold :  # Print percentages every 5 seconds
             total_frames = unsafe_count + safe_count
             unsafe_percent = (unsafe_count / total_frames) * 100.0
             safe_percent = (safe_count / total_frames) * 100.0
             print(f"UnSafe: {unsafe_percent:.2f}%  Safe: {safe_percent:.2f}%")
-            percent_count += 5
+            unsafe_threshold += 5
             if status == "UnSafe" and recording == False:
                 if out is not None :
                     out.write(ppe_result_image)
-                    prev_time = current_time
                     if unsafe_percent >= mean_save:
+                        prev_time = current_time
+                        unsafe_threshold = 0 
                         recording = True
                         print("비디오를 녹화합니다")
                     else:
@@ -150,14 +150,17 @@ if __name__ == "__main__":
                             out = None
             unsafe_count = 0
             safe_count = 0
-
-        if elapsed_time <= y_time_interval and recording:# and elapsed_time >= unsafe_threshold:
+        
+        if elapsed_time <= y_time_interval:# and elapsed_time >= unsafe_threshold:
             if out is not None:
                 out.write(ppe_result_image)
+        else:
+            if out is not None :
+                out = None
 
         if elapsed_time >= y_time_interval:
             prev_time = current_time
-            percent_count = 5
+            unsafe_threshold = 0
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
