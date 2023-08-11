@@ -132,42 +132,40 @@ def detect(save_img=False):
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
                         if c == 2 :
                             object_0 = {'xyxy': xyxy, 'conf': conf}
-                            print("object_0:",object_0)
-                        elif c in [1]:
+                            # print("object_0:",object_0)
+                        elif c == 1 :
                             object_1 = {'xyxy': xyxy, 'conf': conf}
-                            print("object_1:",object_1)
+                            # print("object_1:",object_1)
                 if object_0 is not None and object_1 is not None:
-                    print("works")
-                    global distance
-                    xyxy_0 = object_0['xyxy']
-                    xyxy_1 = object_1['xyxy']
-                    center_0 = ((xyxy_0[0] + xyxy_0[2]) / 2, (xyxy_0[1] + xyxy_0[3]) / 2)
-                    center_1 = ((xyxy_1[0] + xyxy_1[2]) / 2, (xyxy_1[1] + xyxy_1[3]) / 2)
-                    distance = ((center_0[0] - center_1[0]) ** 2 + (center_0[1] - center_1[1]) ** 2) ** 0.5
-                    print("Distance between object_0 and object_1:", distance.item())
+                        print("works")
+                        global distance
+                        xyxy_0 = object_0['xyxy']
+                        xyxy_1 = object_1['xyxy']
+                        center_0 = ((xyxy_0[0] + xyxy_0[2]) / 2, (xyxy_0[1] + xyxy_0[3]) / 2)
+                        center_1 = ((xyxy_1[0] + xyxy_1[2]) / 2, (xyxy_1[1] + xyxy_1[3]) / 2)
+                        distance = ((center_0[0] - center_1[0]) ** 2 + (center_0[1] - center_1[1]) ** 2) ** 0.5
+                        print("Distance between object_0 and object_1:", distance.item())
 
-                    xyxy_0 = object_0["xyxy"]
-                    xyxy_1 = object_1["xyxy"]
-                    x_left = max(xyxy_0[0], xyxy_1[0])
-                    y_top = max(xyxy_0[1], xyxy_1[1])
-                    x_right = max(xyxy_0[2], xyxy_1[2])
-                    y_bottom  = max(xyxy_0[3], xyxy_1[3])
-                    if x_right < x_left or y_bottom  < y_top:
-                        intersection_area = 0
-                    else:
-                        intersection_area = (x_right - x_left) * (y_bottom - y_top)
-                    if intersection_area > 0:
-                        print("The bounding boxes overlap.")
-                        print("안전모 착용 safe")
-                    else:
-                        print("The bounding boxes do not overlap.")
-                        print("안전모 미착용 unsafe")
+                        xyxy_0 = object_0["xyxy"]
+                        xyxy_1 = object_1["xyxy"]
+                        x_left = max(xyxy_0[0], xyxy_1[0])
+                        y_top = max(xyxy_0[1], xyxy_1[1])
+                        x_right = min(xyxy_0[2], xyxy_1[2])
+                        y_bottom  = min(xyxy_0[3], xyxy_1[3])
+                        if x_right < x_left or y_bottom  < y_top:
+                            intersection_area = 0
+                        else:
+                            intersection_area = (x_right - x_left) * (y_bottom - y_top)
+                        if intersection_area > 0:
+                            print("The bounding boxes overlap.")
+                            print("안전모 착용 safe")
+                        else:
+                            print("The bounding boxes do not overlap.")
+                            print("안전모 미착용 unsafe")
                 else:
                     print("사람이 없습니다")
-    
-
             # Print time (inference + NMS)
-            print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
+            print(f'{s}safe. ({(1E3 * (t2 - t1)):.1f}ms')
 
             # Stream results
             if view_img:
