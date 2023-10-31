@@ -4,17 +4,14 @@ import numpy as np
 import datetime
 import time
 
-def detect_ppe(image, model, timestamp, cls_detection=[True, True, True,True]):
+# names: [ "scaffolds","worker","boots","hardhat","safety_vest","hook","robot_dog","opened_hatch","closed_hatch",]
+def detect_ppe(image, model, timestamp):
     results = model(image)
-    # names: [ "scaffolds","worker","boots","hardhat","safety_vest","hook","robot_dog","opened_hatch","closed_hatch",]
-
-    # LABELS = ['scaffold', 'worker', 'hat', 'hook']  
     person = []
     hat = []
     hook = []
-    o_hatch = 0
-    c_hatch = 0
     finalStatus = ""
+    # missing_hooks = max(person_count - hook_count, 0)
     if np.shape(results.xyxy[0].cpu().numpy())[0] > 0:
         for (x0, y0, x1, y1, confi, clas) in results.xyxy[0].cpu().numpy():
             if confi > 0.2:
@@ -22,78 +19,98 @@ def detect_ppe(image, model, timestamp, cls_detection=[True, True, True,True]):
                 box = [int(x0), int(y0), int(x1 - x0), int(y1 - y0)]
                 box2 = [int(x0), int(y0), int(x1), int(y1)]
                 box3 = [int(x0), int(y0), int(x1), int(y1)]
-                if int(clas) == 5 and cls_detection[0] == True:
+                if int(clas) == 5:
                     cv2.rectangle(image, box, (0, 130, 0), 2)
                     cv2.putText(image, "hook {:.2f}".format(confi), (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5,
                                 (0, 200, 0), 2)
                     hook.append(box3)
-                elif int(clas) == 3 and cls_detection[1] == True:
+                elif int(clas) == 3:
                     cv2.rectangle(image, box, (0, 255, 0), 2)
                     cv2.putText(image, "Hard Hat {:.2f}".format(confi), (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5,
                                 (0, 255, 0), 2)
-                    hat.append(box2)  # Add the box coordinates to the person array
+                    hat.append(box2)  # Add the box coordinates to the person arrays
 
-                elif int(clas) == 7 and cls_detection[2] == True:
-                    o_hatch = o_hatch + 1
+                elif int(clas) == 7 :
                     cv2.rectangle(image, box, (0, 0, 255), 2)
                     cv2.putText(image, "opened_hatch {:.2f}".format(confi), (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5,
                                 (0, 0, 255), 2)
                     
-                elif int(clas) == 8 and cls_detection[2] == True:
-                    c_hatch = c_hatch + 1
+                elif int(clas) == 8:
                     cv2.rectangle(image, box, (0, 255, 0), 2)
                     cv2.putText(image, "closed_hatch {:.2f}".format(confi), (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5,
                                 (0, 255, 0), 2)
-                elif int(clas) == 1 and cls_detection[3] == True:
+                elif int(clas) == 1 :
+                    person.append(box2)
+          
 
-                    person.append(box2)  # Add the box coordinates to the person array
-        if o_hatch == 1:
+        class_worker_count = (results.xyxy[0].cpu().numpy()[:, -1] == 1).sum()
+        class_hook_count = (results.xyxy[0].cpu().numpy()[:, -1] == 5).sum()
+        class_helmet_count = (results.xyxy[0].cpu().numpy()[:, -1] == 3).sum()
+        class_opened_hatch = (results.xyxy[0].cpu().numpy()[:, -1] == 7).sum()
+        class_closed_hatch = (results.xyxy[0].cpu().numpy()[:, -1] == 8).sum()
+
+        if class_hook_count >= class_worker_count:
+            missing_hooks = 0
+        else:
+            missing_hooks = abs(class_worker_count - class_hook_count)
+
+        if class_helmet_count >= class_worker_count:
+            missing_helmet = 0
+        else:
+            missing_helmet = abs(class_worker_count - class_helmet_count) #
+
+        if missing_helmet == 0:
+            finalStatus = "Safe"
+        else:
             finalStatus = "UnSafe"
 
-        elif c_hatch == 1:
+        if missing_hooks == 0:
             finalStatus = "Safe"
+        else:
+            finalStatus = "UnSafe"
+
+        if class_opened_hatch == 1:
+            finalStatus = "UnSafe"
+        elif class_closed_hatch == 1:
+            finalStatus = "Safe"
+
+        hatDetected = False
         for perBox in person:
             hatDetected = False
-            hookDetected = False
             for hatBox in hat:
-                if int(hatBox[0]) > int(perBox[0]) and int(hatBox[2]) < int(perBox[2]):
+                if int(hatBox[0]+10) > int(perBox[0]) and int(hatBox[2]-10) < int(perBox[2]):
                     if hatBox[1] >= perBox[1] - 20:
                         hatDetected = True
-            # for hookbox in hook:
-            #    if int(hookbox[0]) < int(perBox[0]) and int(hookbox[2]) < int(perBox[2]):
-            #         if hookbox[1] >= perBox[1] - 20:
-            #             hookDetected = True
-            for hookbox in hook:
-                if int(hookbox[0]) < int(perBox[0]) and int(hookbox[2]) < int(perBox[2]) and hookbox[1] >= perBox[1] - 20:
-                    if hatBox[1] >= perBox[1] - 20:
-                        hookDetected = True
-            if hatDetected and hookDetected:
+            if hatDetected :
                 cv2.rectangle(image,
                               [int(perBox[0]), int(perBox[1]), int(perBox[2] - perBox[0]), int(perBox[3] - perBox[1])],
                               (0, 180, 0), 2)
-                cv2.putText(image, "Person with ppe ", (perBox[0], perBox[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                cv2.putText(image, "Person with helmet", (perBox[0], perBox[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (0, 180, 0), 2)
-                if finalStatus != "UnSafe":
-                    finalStatus = "Safe"
             else:
-                finalStatus = "UnSafe"
+                finalStatus = "UnSafe"   
                 cv2.rectangle(image,
                               [int(perBox[0]), int(perBox[1]), int(perBox[2] - perBox[0]), int(perBox[3] - perBox[1])],
                               (0, 0, 255), 2)
-                cv2.putText(image, "Person without ppe  ", (perBox[0], perBox[1] - 10),
+                cv2.putText(image, "Person without helmet", (perBox[0], perBox[1] - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (0, 0, 255), 2)
+                
 
+        # if finalStatus != "Safe":
         if finalStatus != "Safe":
-            cv2.putText(image, f"{finalStatus} ", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+            cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+            cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+            cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
         else:
-            cv2.putText(image, f"{finalStatus} ", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
-
-
+            cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+            cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+    
     height, width, _ = image.shape
     formatted_datetime = timestamp.strftime("%Y-%m-%d %H:%M:%S")
     # cv2.putText(image, f"{formatted_datetime} ", (width-200, height-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
@@ -101,13 +118,13 @@ def detect_ppe(image, model, timestamp, cls_detection=[True, True, True,True]):
     return image, results.xyxy[0].cpu().numpy(), timestamp, finalStatus
 
 recording = False
-video_path = "E:/total_dataset\data_20230918\clip_0918_2023/A_20230918_26.mp4"
+video_path = "D:\logic\Simplatform/A_20230918_26.mp4"
 if __name__ == "__main__":
     unsafe_threshold = 5  # Number of seconds to consider status as "UnSafe" # x = 5  # seconds
     y = 1   # minutes
     output_fps = 30
 
-    ppe_model = torch.hub.load('WongKinYiu/yolov7', 'custom', './PPE/best_ppe04.pt', force_reload=False)
+    ppe_model = torch.hub.load('WongKinYiu/yolov7', 'custom', './PPE/best_1025.pt', force_reload=False)
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
     desired_fps = 25  # Change it to the desired value
@@ -130,10 +147,10 @@ if __name__ == "__main__":
             break
         timestamp = datetime.datetime.now()
         status = ""
-        frame = cv2.resize(frame, (1920,1080))
+        frame = cv2.resize(frame, (640,640))
         
         if video_writer is None:
-            save_video += 17
+            save_video += 110
             video_name = "./vdieo_save/video_{}.mp4".format(save_video)
             height, width, _ = frame.shape
             fourcc = cv2.VideoWriter_fourcc(*"mp4v")
@@ -145,7 +162,7 @@ if __name__ == "__main__":
             fourcc = cv2.VideoWriter_fourcc(*"MJPG")
             out = cv2.VideoWriter(video_name, fourcc, output_fps, (width, height))
 
-        ppe_result_image, bbox_lists, timestamp, status = detect_ppe(frame, ppe_model, timestamp, [True, True, True,True])
+        ppe_result_image, bbox_lists, timestamp, status = detect_ppe(frame, ppe_model, timestamp)
         video_writer.write(ppe_result_image)
 
         cv2.imshow("PPE Detection", ppe_result_image)
@@ -212,3 +229,7 @@ if __name__ == "__main__":
 
     cap.release()
     cv2.destroyAllWindows()
+
+
+
+  
