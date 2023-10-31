@@ -102,15 +102,14 @@ def detect_ppe(image, model, timestamp):
                 
 
         # if finalStatus != "Safe":
-        if finalStatus != "Safe":
-            cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
-            cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-            cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-        else:
-            cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
-            cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-            cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-    
+        color_status = (0, 0, 255) if finalStatus != "Safe" else (0, 255, 0)
+        color_hooks = (0, 255, 0) if missing_hooks == 0 else (0, 0, 255)
+        color_helmet = (0, 255, 0) if missing_helmet == 0 else (0, 0, 255)
+
+        cv2.putText(image, f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, color_status, 3)
+        cv2.putText(image, f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_hooks, 2)
+        cv2.putText(image, f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_helmet, 2)
+
     height, width, _ = image.shape
     formatted_datetime = timestamp.strftime("%Y-%m-%d %H:%M:%S")
     # cv2.putText(image, f"{formatted_datetime} ", (width-200, height-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
@@ -232,4 +231,35 @@ if __name__ == "__main__":
 
 
 
-  
+#   if finalStatus != "Safe":
+#     cv2.putText(image, f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+#     if missing_hooks == 0:
+#         cv2.putText(image, f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+#     else:
+#         cv2.putText(image, f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+#     if missing_helmet == 0:
+#         cv2.putText(image, f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+#     else:
+#         cv2.putText(image, f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+# else:
+#     cv2.putText(image, f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+#     if missing_hooks == 0:
+#         cv2.putText(image, f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+#     else:
+#         cv2.putText(image, f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+#     if missing_helmet == 0:
+#         cv2.putText(image, f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+#     else:
+#         cv2.putText(image, f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
+#or
+
+# # if finalStatus != "Safe":
+# if finalStatus != "Safe":
+#     cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+#     cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+#     cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+# else:
+#     cv2.putText(image,f"{finalStatus}", (40, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+#     cv2.putText(image,f"[Missing {missing_hooks} hooks]", (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+#     cv2.putText(image,f"[Missing {missing_helmet} helmet]", (170, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
