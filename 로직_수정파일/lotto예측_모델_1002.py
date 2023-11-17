@@ -141,5 +141,6 @@ for n in range(7):
     numbers = gen_numbers_from_probability(ys_pred[0])
     numbers.sort() 
     print('{0} : {1}'.format(n, numbers))
+    #번호 작은 수 부터 순차적으로 나오게 해주는 코드 추가
     list_numbers.append(numbers)  
     
